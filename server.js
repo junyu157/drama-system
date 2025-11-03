@@ -9,7 +9,10 @@ const PORT = process.env.PORT || 3000;
 // 中间件
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public'));
+
+// 修复：正确配置静态文件服务
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // 数据文件路径
 const DATA_FILE = path.join(__dirname, 'data', 'dramaData.json');
