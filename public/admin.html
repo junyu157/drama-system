@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>短剧管理系统 - 后台管理</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .form-section, .list-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #6a11cb;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        .admin-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .admin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .drama-item {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #6a11cb;
+        }
+        .drama-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .drama-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+        .drama-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin: 10px 0;
+        }
+        .keyword {
+            background: #e9ecef;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .home-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>短剧管理系统 - 后台管理</h1>
+            <p>管理短剧数据和网盘链接</p>
+        </header>
+
+        <div id="message"></div>
+
+        <div class="admin-panel">
+            <div class="form-section">
+                <h2>添加/编辑短剧</h2>
+                <form id="dramaForm">
+                    <input type="hidden" id="dramaId">
+                    
+                    <div class="form-group">
+                        <label for="title">短剧标题 *</label>
+                        <input type="text" id="title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="keywords">关键词 (用逗号分隔) *</label>
+                        <input type="text" id="keywords" placeholder="霸道总裁,爱情,都市" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">描述 *</label>
+                        <textarea id="description" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="panUrl">网盘链接 *</label>
+                        <input type="url" id="panUrl" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="icon">图标</label>
+                        <select id="icon">
+                            <option value="💼">💼 职场</option>
+                            <option value="👑">👑 宫廷</option>
+                            <option value="💰">💰 商战</option>
+                            <option value="🎓">🎓 校园</option>
+                            <option value="⚔️">⚔️ 仙侠</option>
+                            <option value="🕵️">🕵️ 特工</option>
+                            <option value="🏠">🏠 都市</option>
+                            <option value="🦸">🦸 英雄</option>
+                            <option value="📺">📺 默认</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="coverImage">封面图片URL</label>
+                        <input type="url" id="coverImage" placeholder="https://example.com/image.jpg">
+                    </div>
+
+                    <button type="submit" class="admin-btn btn-primary">保存短剧</button>
+                    <button type="button" class="admin-btn btn-secondary" onclick="resetForm()">重置</button>
+                </form>
+            </div>
+
+            <div class="list-section">
+                <h2>短剧列表</h2>
+                <div id="dramaList">
+                    <!-- 短剧列表将通过JS动态加载 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="home-link">
+            <a href="/" class="btn-primary">返回首页</a>
+        </div>
+
+        <!-- 免责声明 -->
+        <footer class="disclaimer">
+            <h3>管理后台免责声明</h3>
+            <p>请确保上传的短剧资源不侵犯任何第三方版权，所有资源链接均为用户分享，本站仅提供信息存储服务。</p>
+            <p class="copyright">© 2024 短剧网盘转存系统 - 管理后台</p>
+        </footer>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
