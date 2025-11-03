@@ -2,9 +2,13 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 
+console.log('🚀 开始启动服务器...');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+console.log(`📊 环境变量 PORT: ${process.env.PORT}`);
+console.log(`🎯 使用端口: ${PORT}`);
 // 中间件
 app.use(cors());
 app.use(express.json());
@@ -141,4 +145,14 @@ app.listen(PORT, () => {
     console.log(`短剧网盘系统运行在端口 ${PORT}`);
     console.log(`管理后台: http://localhost:${PORT}/admin`);
     console.log('数据使用内存存储，重启后数据会重置');
+
+app.listen(PORT, () => {
+    console.log(`✅ 服务器成功启动在端口 ${PORT}`);
+    console.log(`🌐 前台地址: http://localhost:${PORT}`);
+    console.log(`⚙️ 管理后台: http://localhost:${PORT}/admin`);
+}).on('error', (err) => {
+    console.error('❌ 服务器启动失败:', err);
+});
+
+module.exports = app;
 });
